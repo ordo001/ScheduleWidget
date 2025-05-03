@@ -20,17 +20,6 @@ namespace ScheduleWidget
         public WidgetForm()
         {
             InitializeComponent();
-            AllocConsole();
-
-
-            //var timer = new Timer() { Interval = 1000 };
-            //timer.Tick += (o, O) => {
-            //    lbMain.Text = "";
-            //    lbMain.Text += DateTime.Now.ToString("HH\n");
-            //    lbMain.Text += DateTime.Now.ToString("mm\n");
-            //    lbMain.Text += DateTime.Now.ToString("ss\n");
-            //    };
-            //timer.Start();
         }
 
         private async Task Parsing()
@@ -73,7 +62,14 @@ namespace ScheduleWidget
             var stringArray = sourceDayText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             var result = $"{stringArray[0]} - {stringArray[1]}\n";
 
-            var timeTable = new Dictionary<string, int>
+            Dictionary<string, int> currentTimeTable = stringArray[0].ToLower() == "суббота" ? new Dictionary<string, int>
+            {
+                { "09:10", 1 },
+                { "10:50", 2 },
+                { "12:50", 3 },
+                { "14:30", 4 }
+            }
+             : new Dictionary<string, int>
             {
                 { "09:10", 1 },
                 { "10:55", 2 },
@@ -82,6 +78,7 @@ namespace ScheduleWidget
                 { "16:30", 5 }
             };
 
+
             for (int i = 2; i < stringArray.Length; i += 5)
             {
                 string startTime = stringArray[i];
@@ -89,7 +86,7 @@ namespace ScheduleWidget
                 string teacher = stringArray[i + 3];
                 string audience = stringArray[i + 4].Replace("Аудитория: ", "").Trim();
 
-                if (!timeTable.TryGetValue(startTime, out int pairNumber))
+                if (!currentTimeTable.TryGetValue(startTime, out int pairNumber))
                 {
                     pairNumber = 0;
                 }
